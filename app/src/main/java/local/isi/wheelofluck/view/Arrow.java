@@ -8,7 +8,12 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import local.isi.wheelofluck.entities.Level;
+import local.isi.wheelofluck.events.ArrowEvent;
+import local.isi.wheelofluck.iface.ArrowListener;
 import local.isi.wheelofluck.info.GameBoard;
 
 public class Arrow extends View implements Runnable {
@@ -26,12 +31,16 @@ public class Arrow extends View implements Runnable {
     int y;
     boolean isRotating = false;
     int speed = 10;
+    static public int nbArrowsLeft;
+    List<ArrowListener> arrArrowListener;
+    boolean levelArrow = false;
 
-    // Constructor for adding existing arrrow in center
-    public Arrow(Context context, Handler handler, int degree) {
+    // Constructor for adding existing arrow in center
+    public Arrow(Context context, Handler handler, Level level, int degree) {
         super(context);
 
         init(context, handler);
+        levelArrow = true;
 
         this.degree = degree;
         isRotating = true;
@@ -40,11 +49,12 @@ public class Arrow extends View implements Runnable {
         handler.post(this);
     }
 
-    // Constructor for adding players arrow
+    // Constructor for adding players arrows
     public Arrow(Context context, Handler handler) {
         super(context);
 
         init(context, handler);
+        arrArrowListener = new ArrayList<>();
 
         //int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
         //arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
@@ -53,6 +63,13 @@ public class Arrow extends View implements Runnable {
         x2 = originXY + w/2;
         y = (int)(height * 0.8);
         arrow = new Rect(x1 ,y ,x2 ,y + h);
+    }
+
+    public void addArrowListener(ArrowListener arrowListener){
+        arrArrowListener.add(arrowListener);
+    }
+    public void removeArrowListener(ArrowListener arrowListener){
+
     }
 
     @Override
@@ -64,7 +81,7 @@ public class Arrow extends View implements Runnable {
             canvas.rotate(degree, originXY, originXY);
             canvas.drawRect(arrow, p);
             canvas.restore();
-        }else{
+        }else {
             canvas.drawRect(arrow, p);
         }
     }
@@ -80,8 +97,11 @@ public class Arrow extends View implements Runnable {
                     y = GameBoard.getOriginXY(ctx) + GameBoard.getMidCircleRadius(ctx) - 10;
                 }
                 arrow.set(x1, y, x2, y + h);
-            } else {
+            } else if (!levelArrow){
+                nbArrowsLeft--;
+                arrArrowListener.get(0).ArrowHit(new ArrowEvent(nbArrowsLeft));
                 isRotating = true;
+                levelArrow = true;
             }
 
             invalidate();

@@ -9,7 +9,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Lv: 1"
+        android:text="Level: 1"
         android:id="@+id/tv_level"
-        android:layout_gravity="left|center_vertical" />
+        android:layout_gravity="left|bottom"
+        android:textColor="#ff000000"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Arrows left: 1"
+        android:id="@+id/tv_arrow"
+        android:layout_gravity="right|bottom"
+        android:textColor="#ff000000"/>
 </FrameLayout>

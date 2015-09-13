@@ -41,7 +41,7 @@ public class GameBoard {
         List<Level> levels = new ArrayList<>();
         boolean clockwise = true;
 
-        int startArrows = 5;
+        int startArrows = 7;
         int startObstacle = 3;
         int speed = 10;
 
@@ -66,7 +66,7 @@ public class GameBoard {
         int degree = 0;
 
         for (int i = 0; i < nbArrow; i++){
-            Arrow arrow = new Arrow(ctx, handler, degree);
+            Arrow arrow = new Arrow(ctx, handler, level, degree);
             fl.addView(arrow);
             degree += degreeIncrement;
         }
