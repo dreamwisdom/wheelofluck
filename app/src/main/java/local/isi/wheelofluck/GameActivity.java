@@ -2,11 +2,11 @@ package local.isi.wheelofluck;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -38,6 +38,10 @@ public class GameActivity extends Activity implements ArrowListener{
         MiddleCircle centerCircle = new MiddleCircle(this);
         fl = (FrameLayout) findViewById(R.id.game_activity);
         fl.addView(centerCircle);
+
+        // init master arrow
+        Arrow masterArrow = new Arrow(ctx, handler, true);
+        fl.addView(masterArrow);
 
         // Init level
         int lv = getIntent().getIntExtra("level", 0);
@@ -100,5 +104,24 @@ public class GameActivity extends Activity implements ArrowListener{
     @Override
     public void ArrowHit(ArrowEvent evt) {
         tvArrow.setText("Arrow left:" + evt.getNbArrow());
+    }
+
+    // Kill activity on back button
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event)
+//    {
+//        if ((keyCode == KeyEvent.KEYCODE_BACK))
+//        {
+//            Arrow.removeRunnables = true;
+//            //finish();
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+    // Kill activity on back button and ?
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }
