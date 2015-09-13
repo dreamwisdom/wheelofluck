@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.widget.Chronometer;
 import android.widget.FrameLayout;
 
+import local.isi.wheelofluck.info.GameBoard;
 import local.isi.wheelofluck.view.MiddleCircle;
 import local.isi.wheelofluck.view.Arrow;
 
@@ -35,6 +36,10 @@ public class GameActivity extends Activity {
         fl = (FrameLayout) findViewById(R.id.game_activity);
         fl.addView(centerCircle);
 
+        // Init level
+        int lv = getIntent().getIntExtra("level", 0);
+        GameBoard.initLevel(ctx, handler, fl, lv);
+
         arrow = new Arrow(ctx, handler);
         fl.addView(arrow);
 
@@ -45,9 +50,6 @@ public class GameActivity extends Activity {
     public boolean onTouchEvent(MotionEvent event) {
 
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-
-
-
 
             if(SystemClock.elapsedRealtime() - timeStamp > 300) {
                 // reset timer
@@ -65,6 +67,7 @@ public class GameActivity extends Activity {
                 arrow.launch();
                 arrow = new Arrow(ctx, handler);
 
+                // TODO fix - causes crashed
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

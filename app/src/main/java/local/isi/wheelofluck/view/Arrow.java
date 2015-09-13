@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.view.View;
 
+import local.isi.wheelofluck.entities.Level;
 import local.isi.wheelofluck.info.GameBoard;
 
 public class Arrow extends View implements Runnable {
@@ -17,33 +18,33 @@ public class Arrow extends View implements Runnable {
     Handler handler;
     Paint p;
     int originXY;
-    int angle;
+    int degree;
     int w;
     int h;
     int x1;
     int x2;
     int y;
     boolean isRotating = false;
+    int speed = 10;
 
+    // Constructor for adding existing arrrow in center
+    public Arrow(Context context, Handler handler, int degree) {
+        super(context);
+
+        init(context, handler);
+
+        this.degree = degree;
+        isRotating = true;
+        int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
+        arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
+        handler.post(this);
+    }
+
+    // Constructor for adding players arrow
     public Arrow(Context context, Handler handler) {
         super(context);
-        this.handler = handler;
 
-        this.ctx = context;
-
-
-        // Color
-        p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        p.setColor(Color.BLUE);
-
-        // Find middle
-        int width = GameBoard.getWidth(context);
-        originXY = GameBoard.getOriginXY(context);
-
-        // Arrow Size
-        w = 15;
-        h = (int)((width/2 - GameBoard.getMidCircleRadius(ctx)) * 0.85);
-
+        init(context, handler);
 
         //int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
         //arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
@@ -58,9 +59,9 @@ public class Arrow extends View implements Runnable {
     protected void onDraw(Canvas canvas) {
 
         if(isRotating) {
-            angle += 1;
+            degree += 1;
             canvas.save();
-            canvas.rotate(angle, originXY, originXY);
+            canvas.rotate(degree, originXY, originXY);
             canvas.drawRect(arrow, p);
             canvas.restore();
         }else{
@@ -84,10 +85,28 @@ public class Arrow extends View implements Runnable {
             }
 
             invalidate();
-            handler.postDelayed(this, 10);
+            handler.postDelayed(this, speed);
     }
 
     public void launch(){
         handler.post(this);
+    }
+
+    private void init(Context ctx, Handler handler){
+
+        this.handler = handler;
+        this.ctx = ctx;
+
+        // Color
+        p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        p.setColor(Color.BLUE);
+
+        // Find middle
+        int width = GameBoard.getWidth(ctx);
+        originXY = GameBoard.getOriginXY(ctx);
+
+        // Arrow Size
+        w = 15;
+        h = (int)((width/2 - GameBoard.getMidCircleRadius(ctx)) * 0.85);
     }
 }

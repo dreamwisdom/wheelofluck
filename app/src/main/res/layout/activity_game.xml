@@ -5,4 +5,11 @@
     android:id="@+id/game_activity"
     android:background="#ffffff">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Lv: 1"
+        android:id="@+id/tv_level"
+        android:layout_gravity="left|center_vertical" />
 </FrameLayout>
