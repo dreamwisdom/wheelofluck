@@ -11,13 +11,13 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import local.isi.wheelofluck.entities.Level;
 import local.isi.wheelofluck.events.ArrowEvent;
 import local.isi.wheelofluck.iface.ArrowListener;
+import local.isi.wheelofluck.iface.IEndLevel;
 import local.isi.wheelofluck.info.GameBoard;
 
 public class Arrow extends View implements Runnable {
@@ -36,6 +36,7 @@ public class Arrow extends View implements Runnable {
     int speed = 10;
     int offsetDegree;                       // offset in relation to master
     List<ArrowListener> arrArrowListener;
+    IEndLevel iEndLevel;
 
     boolean levelArrow = false;             // Arrow added automaticly at the begining of the level
     boolean isRotating = false;
@@ -102,8 +103,8 @@ public class Arrow extends View implements Runnable {
     public void addArrowListener(ArrowListener arrowListener){
         arrArrowListener.add(arrowListener);
     }
-    public void removeArrowListener(ArrowListener arrowListener){
-
+    public void addEndActivity(IEndLevel activity){
+        this.iEndLevel = activity;
     }
 
     @Override
@@ -149,9 +150,10 @@ public class Arrow extends View implements Runnable {
             if(isRotating)
                 degree += 1;
 
+            // Update master arrow
             if (isMaster) {
                 masterDegree = degree;
-                //Log.d("MasterDegree", "" + masterDegree);
+                //Log.d("collision MasterDegree", "" + masterDegree);
             }
 
 
@@ -178,15 +180,25 @@ public class Arrow extends View implements Runnable {
         originXY = GameBoard.getOriginXY(ctx);
 
         // Arrow Size
-        w = 15;
+        w = 10;
         h = (int)((width/2 - GameBoard.getMidCircleRadius(ctx)) * 0.85);
     }
 
     public boolean addToHistory(int degree){
 
+        String history = "";
+        // Print history
+        for (Map.Entry<Integer, Boolean> entry : arrowHistory.entrySet())
+        {
+            history += entry.getKey() + " - ";
+            //System.out.print(entry.getKey() + "/" + entry.getValue() + " - ");
+            //Log.d("Collision", entry.getKey() + "/" + entry.getValue());
+        }
+        Log.d("Collision", history);
+        //System.out.println();
         Log.d("Collision", "" + degree);
 
-        int range = 3;  // += range >> 1 = 1-3 >> 0 = 2
+        int range = 1;  // += range >> 1 = 1-3 >> 0 = 2
 
         boolean collision = false;
 
@@ -197,11 +209,14 @@ public class Arrow extends View implements Runnable {
         }
 
         if(!collision){
+            if (nbArrowsLeft == 1)
+                iEndLevel.nextLevel();
             arrowHistory.put(degree, true);
             Log.d("Collision", "false");
             return false;
         }else{
             Log.d("Collision", "true");
+            iEndLevel.endActivity();
             return true;
         }
 
