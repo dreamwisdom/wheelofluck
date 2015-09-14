@@ -16,13 +16,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Btn start
         Button btnStart = (Button) findViewById(R.id.btn_start);
-
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent gameIntent = new Intent(MainActivity.this, GameLevel.class);
                 gameIntent.putExtra("level", 1);
+                startActivity(gameIntent);
+            }
+        });
+
+        // Btn cheat
+        Button btnCheat = (Button) findViewById(R.id.btn_cheat);
+        btnCheat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gameIntent = new Intent(MainActivity.this, DebugActivity.class);
                 startActivity(gameIntent);
             }
         });

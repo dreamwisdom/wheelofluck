@@ -202,11 +202,14 @@ public class Arrow extends View implements Runnable {
 
         boolean collision = false;
 
-        for (int i = degree - range; i < degree + range; i++){
+        //String degreeToCheck = "To Check ";
+        for (int i = degree - range; i <= degree + range; i++){
+            //degreeToCheck += i + " - ";
             if(arrowHistory.get(i) != null){
                 collision = true;
             }
         }
+        //Log.d("Collision", "" + degreeToCheck);
 
         if(!collision){
             if (nbArrowsLeft == 1)

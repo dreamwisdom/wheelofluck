@@ -1,9 +1,13 @@
 package local.isi.wheelofluck;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import local.isi.wheelofluck.R;
 
@@ -13,6 +17,19 @@ public class DebugActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
+
+        Button btnStart = (Button) findViewById(R.id.btn_c_start);
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gameIntent = new Intent(DebugActivity.this, GameLevel.class);
+
+                EditText etLevel = (EditText) findViewById(R.id.et_c_lv);
+                int level = Integer.parseInt(etLevel.getText().toString());
+                gameIntent.putExtra("level", level);
+                startActivity(gameIntent);
+            }
+        });
     }
 
     @Override
