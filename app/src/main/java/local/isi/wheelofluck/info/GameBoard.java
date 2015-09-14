@@ -62,7 +62,7 @@ public class GameBoard {
         Level level = GameBoard.getLevel(lv);
 
         int nbArrow = level.getNbArrow();
-        int degreeIncrement = 360/ nbArrow;
+        float degreeIncrement = 360f/ nbArrow;
         float degree = 0;
 
         for (int i = 0; i < nbArrow; i++){

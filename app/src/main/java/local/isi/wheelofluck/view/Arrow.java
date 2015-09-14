@@ -45,7 +45,7 @@ public class Arrow extends View implements Runnable {
     static int debugArrowID;
     static float masterDegree;                // Position of master arrow (circle)
     //static Map<Integer, Boolean> arrowHistory;
-    List<Float> arrowHist;
+    static List<Float> arrowHist;
     static public int nbArrowsLeft;
     static public boolean removeRunnables;
 
@@ -197,6 +197,7 @@ public class Arrow extends View implements Runnable {
         for (Float arrow: arrowHist){
             history += arrow + " - ";
         }
+
 //        for (Map.Entry<Integer, Boolean> entry : arrowHistory.entrySet())
 //        {
 //            history += entry.getKey() + " - ";
@@ -211,13 +212,17 @@ public class Arrow extends View implements Runnable {
 
         boolean collision = false;
 
-        //String degreeToCheck = "To Check ";
+        // String degreeToCheck = "To Check ";
+
         // Loop on collision area
-        for (int i = ((int)degree - collisionArea); i <= (int)(degree + collisionArea); i++){
-            //degreeToCheck += i + " - ";
+        int roundDegree = Math.round(degree);
+
+        for (int i = (roundDegree - collisionArea); i <= roundDegree + collisionArea; i++){
+            // degreeToCheck += i + " - ";
+
             // Check if degree is in history
             for (Float deg: arrowHist) {
-                    if (deg.intValue() == i) {
+                    if (Math.round(deg) == i) {
                     collision = true;
                 }
             }
