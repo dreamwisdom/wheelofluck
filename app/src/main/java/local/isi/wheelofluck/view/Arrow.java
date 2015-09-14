@@ -27,7 +27,7 @@ public class Arrow extends View implements Runnable {
     Handler handler;
     Paint p;
     int originXY;
-    int degree;
+    float degree;
     int w = 20;
     int collisionArea = 3;  // += range >> 1 = 1-3 >> 0 = 2
     int h;
@@ -35,7 +35,7 @@ public class Arrow extends View implements Runnable {
     int x2;
     int y;
     int speed = 10;
-    int offsetDegree;                       // offset in relation to master
+    float offsetDegree;                       // offset in relation to master
     List<ArrowListener> arrArrowListener;
     IEndLevel iEndLevel;
 
@@ -43,8 +43,9 @@ public class Arrow extends View implements Runnable {
     boolean isRotating = false;
     boolean isMaster = false;
     static int debugArrowID;
-    static int masterDegree;                // Position of master arrow (circle)
-    static Map<Integer, Boolean> arrowHistory;
+    static float masterDegree;                // Position of master arrow (circle)
+    //static Map<Integer, Boolean> arrowHistory;
+    List<Float> arrowHist;
     static public int nbArrowsLeft;
     static public boolean removeRunnables;
 
@@ -56,20 +57,21 @@ public class Arrow extends View implements Runnable {
         removeRunnables = false;
         init(context, handler);
         levelArrow = true;
-        arrowHistory = new HashMap<>();
+        //arrowHistory = new HashMap<>();
+        arrowHist = new ArrayList<>();
         p.setColor(Color.RED);
         isMaster = true;
 
         isRotating = true;
         int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
-        w = 20;
+        w = 30;
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
 
         handler.post(this);
     }
 
     // Constructor for adding pre-existing arrows in center
-    public Arrow(Context context, Handler handler, Level level, int degree) {
+    public Arrow(Context context, Handler handler, Level level, float degree) {
         super(context);
 
         ++debugArrowID;
@@ -77,14 +79,14 @@ public class Arrow extends View implements Runnable {
         levelArrow = true;
 
         // TODO Fix? I have no idea (necessary to draw correctly the arrows)
-        this.degree = degree + debugArrowID -1;
-        //this.degree = degree;
+        //this.degree = degree + debugArrowID -1;
+        this.degree = degree;
         // ^^^
 
         isRotating = true;
         int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
-        addToHistory(this.degree);
+        addToHistory(degree);
         handler.post(this);
     }
 
@@ -188,16 +190,19 @@ public class Arrow extends View implements Runnable {
         h = (int)((width/2 - GameBoard.getMidCircleRadius(ctx)) * 0.85);
     }
 
-    public boolean addToHistory(int degree){
+    public boolean addToHistory(float degree){
 
         String history = "";
         // Print history
-        for (Map.Entry<Integer, Boolean> entry : arrowHistory.entrySet())
-        {
-            history += entry.getKey() + " - ";
-            //System.out.print(entry.getKey() + "/" + entry.getValue() + " - ");
-            //Log.d("Collision", entry.getKey() + "/" + entry.getValue());
+        for (Float arrow: arrowHist){
+            history += arrow + " - ";
         }
+//        for (Map.Entry<Integer, Boolean> entry : arrowHistory.entrySet())
+//        {
+//            history += entry.getKey() + " - ";
+//            //System.out.print(entry.getKey() + "/" + entry.getValue() + " - ");
+//            //Log.d("Collision", entry.getKey() + "/" + entry.getValue());
+//        }
         Log.d("Collision", history);
         //System.out.println();
         Log.d("Collision", "" + degree);
@@ -207,10 +212,14 @@ public class Arrow extends View implements Runnable {
         boolean collision = false;
 
         //String degreeToCheck = "To Check ";
-        for (int i = degree - collisionArea; i <= degree + collisionArea; i++){
+        // Loop on collision area
+        for (int i = ((int)degree - collisionArea); i <= (int)(degree + collisionArea); i++){
             //degreeToCheck += i + " - ";
-            if(arrowHistory.get(i) != null){
-                collision = true;
+            // Check if degree is in history
+            for (Float deg: arrowHist) {
+                    if (deg.intValue() == i) {
+                    collision = true;
+                }
             }
         }
         //Log.d("Collision", "" + degreeToCheck);
@@ -218,7 +227,7 @@ public class Arrow extends View implements Runnable {
         if(!collision){
             if (nbArrowsLeft == 1)
                 iEndLevel.nextLevel();
-            arrowHistory.put(degree, true);
+            arrowHist.add(degree);
             Log.d("Collision", "false");
             return false;
         }else{
