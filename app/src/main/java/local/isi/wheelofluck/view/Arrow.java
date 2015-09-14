@@ -28,7 +28,8 @@ public class Arrow extends View implements Runnable {
     Paint p;
     int originXY;
     int degree;
-    int w;
+    int w = 20;
+    int collisionArea = 3;  // += range >> 1 = 1-3 >> 0 = 2
     int h;
     int x1;
     int x2;
@@ -67,7 +68,7 @@ public class Arrow extends View implements Runnable {
         handler.post(this);
     }
 
-    // Constructor for adding existing arrow in center
+    // Constructor for adding pre-existing arrows in center
     public Arrow(Context context, Handler handler, Level level, int degree) {
         super(context);
 
@@ -75,11 +76,15 @@ public class Arrow extends View implements Runnable {
         init(context, handler);
         levelArrow = true;
 
-        this.degree = degree;
+        // TODO Fix? I have no idea (necessary to draw correctly the arrows)
+        this.degree = degree + debugArrowID -1;
+        //this.degree = degree;
+        // ^^^
+
         isRotating = true;
         int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
-        addToHistory(degree);
+        addToHistory(this.degree);
         handler.post(this);
     }
 
@@ -125,35 +130,35 @@ public class Arrow extends View implements Runnable {
 
         // Stop runnable when activity is killed
         if (!removeRunnables) {
-
-            if (degree == 360)
-                degree = 0;
-
             // Moving arrow to target
-            // If arrow is too deep inside, ajust its position
+            // If arrow is too deep inside, adjust its position
             if (!isRotating && y > GameBoard.getOriginXY(ctx) + GameBoard.getMidCircleRadius(ctx) - 10) {
                 // Arrow speed
                 y -= 75;
+                // Successful hit
                 if (y < GameBoard.getOriginXY(ctx) + GameBoard.getMidCircleRadius(ctx) - 10) {
                     y = GameBoard.getOriginXY(ctx) + GameBoard.getMidCircleRadius(ctx) - 10;
                     offsetDegree = masterDegree;
                     addToHistory(offsetDegree);
+
+                    nbArrowsLeft--;
+                    arrArrowListener.get(0).ArrowHit(new ArrowEvent(nbArrowsLeft));
+                    isRotating = true;
+                    levelArrow = true;
                 }
                 arrow.set(x1, y, x2, y + h);
-            } else if (!levelArrow) {
-                nbArrowsLeft--;
-                arrArrowListener.get(0).ArrowHit(new ArrowEvent(nbArrowsLeft));
-                isRotating = true;
-                levelArrow = true;
             }
+            if (degree == 360)
+                degree = 0;
 
-            if(isRotating)
+
+            if (isRotating)
                 degree += 1;
 
             // Update master arrow
             if (isMaster) {
                 masterDegree = degree;
-                //Log.d("collision MasterDegree", "" + masterDegree);
+                Log.d("collision MasterDegree", "" + masterDegree);
             }
 
 
@@ -180,7 +185,6 @@ public class Arrow extends View implements Runnable {
         originXY = GameBoard.getOriginXY(ctx);
 
         // Arrow Size
-        w = 10;
         h = (int)((width/2 - GameBoard.getMidCircleRadius(ctx)) * 0.85);
     }
 
@@ -198,12 +202,12 @@ public class Arrow extends View implements Runnable {
         //System.out.println();
         Log.d("Collision", "" + degree);
 
-        int range = 1;  // += range >> 1 = 1-3 >> 0 = 2
+
 
         boolean collision = false;
 
         //String degreeToCheck = "To Check ";
-        for (int i = degree - range; i <= degree + range; i++){
+        for (int i = degree - collisionArea; i <= degree + collisionArea; i++){
             //degreeToCheck += i + " - ";
             if(arrowHistory.get(i) != null){
                 collision = true;
