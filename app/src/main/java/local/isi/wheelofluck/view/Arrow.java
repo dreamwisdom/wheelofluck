@@ -31,9 +31,9 @@ public class Arrow extends View implements Runnable {
     Paint p;
     int originXY;
     float degree;
-    static int w = 14;
+    static int w;
     int collisionArea = 3;  // += range >> 1 = 1-3 >> 0 = 2
-    int h;
+    static int h;
     int x1;
     int x2;
     int y;
@@ -54,8 +54,8 @@ public class Arrow extends View implements Runnable {
     static int piercingDistance;
     static Level level;
     static int arrowHeadYOffset = -10;
-    static int arrowHeadWidth = 20;
-    static int arrowHeadHeight = 20;
+    static int arrowHeadWidth;
+    static int arrowHeadHeight;
 
     static Paint pArrowHead;
     Path arrowHead;
@@ -64,6 +64,9 @@ public class Arrow extends View implements Runnable {
     public Arrow(Context context, Handler handler, Level level, boolean master) {
         super(context);
 
+        this.ctx = context;
+
+        initArrowSize();
         this.level = level;
         debugArrowID = 0;
         removeRunnables = false;
@@ -246,17 +249,16 @@ public class Arrow extends View implements Runnable {
         h = (int)((width/2 - GameBoard.getMidCircleRadius(ctx)) * 0.85);
     }
 
-    public boolean addToHistory(float degree){
+    public boolean addToHistory(float degree) {
 
         // Print history
         String history = "";
-        for (Float arrow: arrowHist){
+        for (Float arrow : arrowHist) {
             history += arrow + " - ";
         }
 
         Log.d("Collision", history);
         Log.d("Collision", "" + degree);
-
 
 
         boolean collision = false;
@@ -270,25 +272,34 @@ public class Arrow extends View implements Runnable {
             // degreeToCheck += i + " - ";
 
             // Check if degree is in history
-            for (Float deg: arrowHist) {
-                    if (Math.round(deg) == i) {
+            for (Float deg : arrowHist) {
+                if (Math.round(deg) == i) {
                     collision = true;
                 }
             }
         }
         //Log.d("Collision", "" + degreeToCheck);
 
-        if(!collision){
+        if (!collision) {
             if (nbArrowsLeft == 1)
                 iEndLevel.nextLevel();
             arrowHist.add(degree);
             Log.d("Collision", "false");
             return false;
-        }else{
+        } else {
             Log.d("Collision", "true");
             iEndLevel.endActivity();
             return true;
         }
+    }
+    public void initArrowSize()   {
+        int screenWidth = GameBoard.getWidth(ctx);
+        arrowHeadWidth = (int)(screenWidth * 0.020);
+        arrowHeadHeight = (int)(screenWidth * 0.020);
+        w = (int)(screenWidth * 0.012);
 
     }
+
+
 }
+
