@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameLevel"
+            android:name=".GameActivity"
             android:label="@string/title_activity_game"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >

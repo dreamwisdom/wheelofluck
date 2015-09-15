@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import local.isi.wheelofluck.R;
-
 public class DebugActivity extends AppCompatActivity {
 
     @Override
@@ -22,7 +20,7 @@ public class DebugActivity extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gameIntent = new Intent(DebugActivity.this, GameLevel.class);
+                Intent gameIntent = new Intent(DebugActivity.this, GameActivity.class);
 
                 EditText etLevel = (EditText) findViewById(R.id.et_c_lv);
                 int level = Integer.parseInt(etLevel.getText().toString());

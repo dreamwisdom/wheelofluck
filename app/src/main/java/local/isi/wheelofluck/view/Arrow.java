@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -48,11 +49,14 @@ public class Arrow extends View implements Runnable {
     static List<Float> arrowHist;
     static public int nbArrowsLeft;
     static public boolean removeRunnables;
+    static int piercingDistance;
+    static Level level;
 
     // Constructor for the master arrow
-    public Arrow(Context context, Handler handler, boolean master) {
+    public Arrow(Context context, Handler handler, Level level, boolean master) {
         super(context);
 
+        this.level = level;
         debugArrowID = 0;
         removeRunnables = false;
         init(context, handler);
@@ -61,9 +65,10 @@ public class Arrow extends View implements Runnable {
         arrowHist = new ArrayList<>();
         p.setColor(Color.RED);
         isMaster = true;
+        piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
 
         isRotating = true;
-        int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
+        //int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
         w = 30;
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
 
@@ -71,7 +76,7 @@ public class Arrow extends View implements Runnable {
     }
 
     // Constructor for adding pre-existing arrows in center
-    public Arrow(Context context, Handler handler, Level level, float degree) {
+    public Arrow(Context context, Handler handler, float degree) {
         super(context);
 
         ++debugArrowID;
@@ -84,7 +89,7 @@ public class Arrow extends View implements Runnable {
         // ^^^
 
         isRotating = true;
-        int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
+
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
         addToHistory(degree);
         handler.post(this);
@@ -150,12 +155,19 @@ public class Arrow extends View implements Runnable {
                 }
                 arrow.set(x1, y, x2, y + h);
             }
-            if (degree == 360)
-                degree = 0;
+            if (level.isClockwise()) {
+                if (degree == 360)
+                    degree = 0;
 
+                if (isRotating)
+                    degree += 1;
+            }else{
+                if (degree == 0)
+                    degree = 360;
 
-            if (isRotating)
-                degree += 1;
+                if (isRotating)
+                    degree -= 1;
+            }
 
             // Update master arrow
             if (isMaster) {
@@ -192,20 +204,13 @@ public class Arrow extends View implements Runnable {
 
     public boolean addToHistory(float degree){
 
-        String history = "";
         // Print history
+        String history = "";
         for (Float arrow: arrowHist){
             history += arrow + " - ";
         }
 
-//        for (Map.Entry<Integer, Boolean> entry : arrowHistory.entrySet())
-//        {
-//            history += entry.getKey() + " - ";
-//            //System.out.print(entry.getKey() + "/" + entry.getValue() + " - ");
-//            //Log.d("Collision", entry.getKey() + "/" + entry.getValue());
-//        }
         Log.d("Collision", history);
-        //System.out.println();
         Log.d("Collision", "" + degree);
 
 

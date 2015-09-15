@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import local.isi.wheelofluck.entities.Level;
 import local.isi.wheelofluck.events.ArrowEvent;
 import local.isi.wheelofluck.iface.ArrowListener;
 import local.isi.wheelofluck.iface.IEndLevel;
@@ -21,7 +22,7 @@ import local.isi.wheelofluck.info.GameBoard;
 import local.isi.wheelofluck.view.MiddleCircle;
 import local.isi.wheelofluck.view.Arrow;
 
-public class GameLevel extends Activity implements ArrowListener, IEndLevel {
+public class GameActivity extends Activity implements ArrowListener, IEndLevel {
 
     Context ctx;
     Handler handler;
@@ -45,8 +46,9 @@ public class GameLevel extends Activity implements ArrowListener, IEndLevel {
 
         // init master arrow
         int lv = getIntent().getIntExtra("level", 0);
+        Level level = GameBoard.getLevel(lv);
         Arrow.nbArrowsLeft = GameBoard.getLevel(lv).getNbArrow();
-        Arrow masterArrow = new Arrow(ctx, handler, true);
+        Arrow masterArrow = new Arrow(ctx, handler, level, true);
         fl.addView(masterArrow);
 
         // Init level
