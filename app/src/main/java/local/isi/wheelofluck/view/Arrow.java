@@ -37,7 +37,7 @@ public class Arrow extends View implements Runnable {
     int x1;
     int x2;
     int y;
-    int speed = 10;
+    float speed = 1;
     float offsetDegree;                       // offset in relation to master
     List<ArrowListener> arrArrowListener;
     IEndLevel iEndLevel;
@@ -207,13 +207,13 @@ public class Arrow extends View implements Runnable {
                     degree = 0;
 
                 if (isRotating)
-                    degree += 1;
+                    degree += speed;
             }else{
                 if (degree == 0)
                     degree = 360;
 
                 if (isRotating)
-                    degree -= 1;
+                    degree -= speed;
             }
 
             // Update master arrow
@@ -224,7 +224,7 @@ public class Arrow extends View implements Runnable {
 
 
             invalidate();
-            handler.postDelayed(this, speed);
+            handler.post(this);
         }
     }
 
@@ -294,8 +294,8 @@ public class Arrow extends View implements Runnable {
     }
     public void initArrowSize()   {
         int screenWidth = GameBoard.getWidth(ctx);
-        arrowHeadWidth = (int)(screenWidth * 0.020);
-        arrowHeadHeight = (int)(screenWidth * 0.020);
+        arrowHeadWidth = (int)(screenWidth * 0.02);
+        arrowHeadHeight = (int)(screenWidth * 0.02);
         w = (int)(screenWidth * 0.012);
 
     }
