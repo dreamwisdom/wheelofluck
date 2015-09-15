@@ -54,7 +54,7 @@ public class Arrow extends View implements Runnable {
     static int piercingDistance;
     static Level level;
     static int arrowHeadYOffset = -10;
-    static int arrowHeadWidth = 30;
+    static int arrowHeadWidth = 20;
     static int arrowHeadHeight = 20;
 
     static Paint pArrowHead;
