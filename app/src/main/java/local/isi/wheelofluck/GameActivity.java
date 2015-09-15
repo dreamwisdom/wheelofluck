@@ -38,7 +38,6 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
 
         ctx = this;
         handler = new Handler();
-
         // Adding middle circle to layout
         MiddleCircle centerCircle = new MiddleCircle(this);
         fl = (FrameLayout) findViewById(R.id.game_activity);

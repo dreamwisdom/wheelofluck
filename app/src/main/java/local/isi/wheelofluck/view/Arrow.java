@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -29,7 +31,7 @@ public class Arrow extends View implements Runnable {
     Paint p;
     int originXY;
     float degree;
-    int w = 20;
+    static int w = 14;
     int collisionArea = 3;  // += range >> 1 = 1-3 >> 0 = 2
     int h;
     int x1;
@@ -51,6 +53,12 @@ public class Arrow extends View implements Runnable {
     static public boolean removeRunnables;
     static int piercingDistance;
     static Level level;
+    static int arrowHeadYOffset = -10;
+    static int arrowHeadWidth = 30;
+    static int arrowHeadHeight = 20;
+
+    static Paint pArrowHead;
+    Path arrowHead;
 
     // Constructor for the master arrow
     public Arrow(Context context, Handler handler, Level level, boolean master) {
@@ -69,8 +77,19 @@ public class Arrow extends View implements Runnable {
 
         isRotating = true;
         //int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
-        w = 30;
+        //w = 30;
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
+
+        pArrowHead = new Paint();
+        pArrowHead.setStyle(Paint.Style.FILL);
+        pArrowHead.setColor(Color.BLACK);
+
+        int triX = originXY;
+        int triY = originXY + piercingDistance;
+
+        arrowHead = Calculate(new Point(triX, triY + arrowHeadYOffset),
+                new Point(triX - arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset),
+                new Point(triX + arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset));
 
         handler.post(this);
     }
@@ -83,14 +102,21 @@ public class Arrow extends View implements Runnable {
         init(context, handler);
         levelArrow = true;
 
-        // TODO Fix? I have no idea (necessary to draw correctly the arrows)
-        //this.degree = degree + debugArrowID -1;
         this.degree = degree;
-        // ^^^
 
         isRotating = true;
 
+        // arrow position
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
+
+        // arrow head position
+        int triX = originXY;
+        int triY = originXY + piercingDistance;
+
+        arrowHead = Calculate(new Point(triX, triY + arrowHeadYOffset),
+                new Point(triX - arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset),
+                new Point(triX + arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset));
+
         addToHistory(degree);
         handler.post(this);
     }
@@ -110,6 +136,10 @@ public class Arrow extends View implements Runnable {
         x2 = originXY + w/2;
         y = (int)(height * 0.8);
         arrow = new Rect(x1 ,y ,x2 ,y + h);
+
+        arrowHead = Calculate(new Point((x1 + x2)/2, y + arrowHeadYOffset),
+                new Point((x1 + x2)/2 - arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset),
+                new Point((x1 + x2)/2 + arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset));
     }
 
     public void addArrowListener(ArrowListener arrowListener){
@@ -126,12 +156,21 @@ public class Arrow extends View implements Runnable {
             canvas.save();
             canvas.rotate(degree, originXY, originXY);
             canvas.drawRect(arrow, p);
+            canvas.drawPath(arrowHead, pArrowHead);
             canvas.restore();
         }else {
+
             canvas.drawRect(arrow, p);
+            canvas.drawPath(arrowHead, pArrowHead);
         }
     }
-
+    private Path Calculate(Point A, Point B, Point C) {
+        Path Pencil = new Path();
+        Pencil.moveTo(A.x, A.y);
+        Pencil.lineTo(B.x, B.y);
+        Pencil.lineTo(C.x, C.y);
+        return Pencil;
+    }
     @Override
     public void run() {
 
@@ -154,6 +193,11 @@ public class Arrow extends View implements Runnable {
                     levelArrow = true;
                 }
                 arrow.set(x1, y, x2, y + h);
+                arrowHead = Calculate(new Point((x1 + x2)/2, y + arrowHeadYOffset),
+                        new Point((x1 + x2)/2 - arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset),
+                        new Point((x1 + x2)/2 + arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset));
+//                arrowHead = Calculate(new Point((x1 + x2)/2, y), new Point((x1 + x2)/2 - 40,y +40),
+//                        new Point((x1 + x2)/2 + 40,y + 40));
             }
             if (level.isClockwise()) {
                 if (degree == 360)
@@ -172,7 +216,7 @@ public class Arrow extends View implements Runnable {
             // Update master arrow
             if (isMaster) {
                 masterDegree = degree;
-                Log.d("collision MasterDegree", "" + masterDegree);
+                //Log.d("collision MasterDegree", "" + masterDegree);
             }
 
 
@@ -222,7 +266,7 @@ public class Arrow extends View implements Runnable {
         // Loop on collision area
         int roundDegree = Math.round(degree);
 
-        for (int i = (roundDegree - collisionArea); i <= roundDegree + collisionArea; i++){
+        for (int i = (roundDegree - collisionArea); i <= roundDegree + collisionArea; i++) {
             // degreeToCheck += i + " - ";
 
             // Check if degree is in history
