@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@android:color/white"
+    android:background="@android:color/black"
     android:orientation="vertical">
 <LinearLayout
     android:layout_width="match_parent"
@@ -12,41 +12,41 @@
 
 
   <ImageView
-      android:layout_width="330px"
-      android:layout_height="330px"
-      android:src="@drawable/logo"
-      android:layout_marginLeft="100dp" />
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="80dp"
+      android:src="@drawable/logo" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start"
         android:id="@+id/btn_start"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="130dp"
-        android:layout_marginTop="-20dp" />
+        android:src="@drawable/start"
 
-    <Button
-        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp" />
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="cheat"
-        android:id="@+id/btn_cheat"
-        android:layout_marginLeft="130dp"
-        android:layout_marginTop="10dp" />
-    <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/btn__cheat"
+        android:src="@drawable/level"
+
+        android:layout_marginTop="20dp" />
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Option"
         android:id="@+id/btn_option"
-        android:layout_marginLeft="130dp"
-        android:layout_marginTop="10dp" />
-    <Button
-        android:layout_width="wrap_content"
+        android:src="@drawable/option"
+
+        android:layout_marginTop="20dp" />
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Quitter"
         android:id="@+id/btn_quitter"
-        android:layout_marginLeft="130dp"
-        android:layout_marginTop="10dp" />
+        android:src="@drawable/quitter"
+
+        android:layout_marginTop="20dp" />
+
+
+
 </LinearLayout>
 </LinearLayout>

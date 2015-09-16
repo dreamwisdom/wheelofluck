@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class MainActivity extends Activity {
 
@@ -17,7 +18,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // Btn start
-        Button btnStart = (Button) findViewById(R.id.btn_start);
+        ImageView btnStart = (ImageView) findViewById(R.id.btn_start);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -28,7 +29,7 @@ public class MainActivity extends Activity {
         });
 
         // Btn cheat
-        Button btnCheat = (Button) findViewById(R.id.btn_cheat);
+        ImageView btnCheat = (ImageView) findViewById(R.id.btn__cheat);
         btnCheat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
