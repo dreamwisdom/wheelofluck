@@ -1,6 +1,8 @@
 package local.isi.wheelofluck.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import local.isi.wheelofluck.R;
 import local.isi.wheelofluck.entities.Level;
 import local.isi.wheelofluck.events.ArrowEvent;
 import local.isi.wheelofluck.iface.ArrowListener;
@@ -28,7 +31,7 @@ public class Arrow extends View implements Runnable {
     Context ctx;
     Rect arrow;
     Handler handler;
-    Paint p;
+    Paint p;                                    // arrow color
     int originXY;
     float degree;
     static int w;
@@ -42,12 +45,11 @@ public class Arrow extends View implements Runnable {
     List<ArrowListener> arrArrowListener;
     IEndLevel iEndLevel;
 
-    boolean levelArrow = false;             // Arrow added automaticly at the begining of the level
+    boolean levelArrow = false;                 // Arrow added automaticly at the begining of the level
     boolean isRotating = false;
     boolean isMaster = false;
     static int debugArrowID;
     static float masterDegree;                // Position of master arrow (circle)
-    //static Map<Integer, Boolean> arrowHistory;
     static List<Float> arrowHist;
     static public int nbArrowsLeft;
     static public boolean removeRunnables;
@@ -59,6 +61,8 @@ public class Arrow extends View implements Runnable {
 
     static Paint pArrowHead;
     Path arrowHead;
+    Rect arrowTail;
+    Paint pArrowTail;
 
     // Constructor for the master arrow
     public Arrow(Context context, Handler handler, Level level, boolean master) {
@@ -72,14 +76,13 @@ public class Arrow extends View implements Runnable {
         removeRunnables = false;
         init(context, handler);
         levelArrow = true;
-        //arrowHistory = new HashMap<>();
         arrowHist = new ArrayList<>();
-        p.setColor(Color.RED);
+        //p.setColor(Color.RED);
+        p.setColor(Color.parseColor("#00000000"));
         isMaster = true;
         piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
 
         isRotating = true;
-        //int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
         //w = 30;
         arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
 
@@ -93,6 +96,13 @@ public class Arrow extends View implements Runnable {
         arrowHead = Calculate(new Point(triX, triY + arrowHeadYOffset),
                 new Point(triX - arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset),
                 new Point(triX + arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset));
+
+        arrowTail = new Rect(originXY - w*2,
+                originXY + piercingDistance + h/2,
+                originXY + w*2,
+                originXY + piercingDistance + h - h/9);
+        pArrowTail = new Paint();
+        pArrowTail.setColor(Color.parseColor("#00000000"));
 
         handler.post(this);
     }
@@ -120,11 +130,18 @@ public class Arrow extends View implements Runnable {
                 new Point(triX - arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset),
                 new Point(triX + arrowHeadWidth,triY + arrowHeadHeight + arrowHeadYOffset));
 
+        arrowTail = new Rect(originXY - (int)(w*1.5),
+                originXY + (int)(piercingDistance + h*.6),
+                originXY + (int)(w*1.5),
+                originXY + piercingDistance + h - h/9);
+        pArrowTail = new Paint();
+        pArrowTail.setColor(Color.parseColor("#99FFFFFF"));
+
         addToHistory(degree);
         handler.post(this);
     }
 
-    // Constructor for adding players arrows
+    // Constructor for adding players (ready to shoot) arrows
     public Arrow(Context context, Handler handler) {
         super(context);
 
@@ -143,6 +160,13 @@ public class Arrow extends View implements Runnable {
         arrowHead = Calculate(new Point((x1 + x2)/2, y + arrowHeadYOffset),
                 new Point((x1 + x2)/2 - arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset),
                 new Point((x1 + x2)/2 + arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset));
+
+        arrowTail = new Rect(originXY - (int)(w*1.5),
+                y + (int)(h*.6),
+                originXY + (int)(w*1.5),
+                y + h - h/9);
+        pArrowTail = new Paint();
+        pArrowTail.setColor(Color.parseColor("#99FFFFFF"));
     }
 
     public void addArrowListener(ArrowListener arrowListener){
@@ -155,17 +179,19 @@ public class Arrow extends View implements Runnable {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        if(isRotating) {
+        if (isRotating) {
             canvas.save();
             canvas.rotate(degree, originXY, originXY);
             canvas.drawRect(arrow, p);
             canvas.drawPath(arrowHead, pArrowHead);
+            canvas.drawRect(arrowTail, pArrowTail);
             canvas.restore();
-        }else {
-
+        } else {
             canvas.drawRect(arrow, p);
             canvas.drawPath(arrowHead, pArrowHead);
+            canvas.drawRect(arrowTail, pArrowTail);
         }
+
     }
     private Path Calculate(Point A, Point B, Point C) {
         Path Pencil = new Path();
@@ -199,8 +225,11 @@ public class Arrow extends View implements Runnable {
                 arrowHead = Calculate(new Point((x1 + x2)/2, y + arrowHeadYOffset),
                         new Point((x1 + x2)/2 - arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset),
                         new Point((x1 + x2)/2 + arrowHeadWidth, y + arrowHeadHeight + arrowHeadYOffset));
-//                arrowHead = Calculate(new Point((x1 + x2)/2, y), new Point((x1 + x2)/2 - 40,y +40),
-//                        new Point((x1 + x2)/2 + 40,y + 40));
+
+                arrowTail = new Rect(originXY - (int)(w*1.5),
+                        y + (int)(h*.6),
+                        originXY + (int)(w*1.5),
+                        y + h - h/9);
             }
             if (level.isClockwise()) {
                 if (degree == 360)
@@ -239,7 +268,7 @@ public class Arrow extends View implements Runnable {
 
         // Color
         p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        p.setColor(Color.BLUE);
+        p.setColor(Color.parseColor("#B2B2B2"));
 
         // Find middle
         int width = GameBoard.getWidth(ctx);
