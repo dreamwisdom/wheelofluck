@@ -72,6 +72,7 @@ public class Arrow extends View implements Runnable {
 
         initArrowSize();
         this.level = level;
+        arrowHeadYOffset = -(int)(GameBoard.getMidCircleRadius(ctx) * 0.06);
         debugArrowID = 0;
         removeRunnables = false;
         init(context, handler);
@@ -80,7 +81,7 @@ public class Arrow extends View implements Runnable {
         //p.setColor(Color.RED);
         p.setColor(Color.parseColor("#00000000"));
         isMaster = true;
-        piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
+        piercingDistance = GameBoard.getMidCircleRadius(ctx) - (int)(GameBoard.getMidCircleRadius(ctx) * 0.06);
 
         isRotating = true;
         //w = 30;
@@ -135,8 +136,9 @@ public class Arrow extends View implements Runnable {
                 originXY + (int)(w*1.5),
                 originXY + piercingDistance + h - h/9);
         pArrowTail = new Paint();
-        pArrowTail.setColor(Color.parseColor("#99FFFFFF"));
+        pArrowTail.setColor(Color.parseColor("#997ABA7A"));
 
+        p.setColor(Color.parseColor("#FF7ABA7A"));
         addToHistory(degree);
         handler.post(this);
     }
@@ -166,7 +168,7 @@ public class Arrow extends View implements Runnable {
                 originXY + (int)(w*1.5),
                 y + h - h/9);
         pArrowTail = new Paint();
-        pArrowTail.setColor(Color.parseColor("#99FFFFFF"));
+        pArrowTail.setColor(Color.parseColor("#99999999"));
     }
 
     public void addArrowListener(ArrowListener arrowListener){
@@ -268,7 +270,7 @@ public class Arrow extends View implements Runnable {
 
         // Color
         p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        p.setColor(Color.parseColor("#B2B2B2"));
+        p.setColor(Color.parseColor("#FFCDB99C"));
 
         // Find middle
         int width = GameBoard.getWidth(ctx);
@@ -326,7 +328,6 @@ public class Arrow extends View implements Runnable {
         arrowHeadWidth = (int)(screenWidth * 0.02);
         arrowHeadHeight = (int)(screenWidth * 0.02);
         w = (int)(screenWidth * 0.012);
-
     }
 
 

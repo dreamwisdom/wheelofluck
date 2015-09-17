@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     tools:context="local.isi.wheelofluck.GameActivity"
     android:id="@+id/game_activity"
-    android:background="#555555">
+    android:background="#455372">
 
     <TextView
         android:layout_width="wrap_content"
