@@ -1,17 +1,16 @@
 package local.isi.wheelofluck.entities;
 
-/**
- * Created by Dream on 9/12/2015.
- */
 public class Level {
 
+    int level;
     int nbArrow;
     boolean clockwise;
     int nbObstacle;
     int speed;
 
-    public Level(boolean clockwise, int nbArrow, int nbObstacle, int speed) {
+    public Level(int level, boolean clockwise, int nbArrow, int nbObstacle, int speed) {
         this.clockwise = clockwise;
+        this.level = level;
         this.nbArrow = nbArrow;
         this.nbObstacle = nbObstacle;
         this.speed = speed;
@@ -23,6 +22,14 @@ public class Level {
 
     public void setClockwise(boolean clockwise) {
         this.clockwise = clockwise;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public int getNbArrow() {

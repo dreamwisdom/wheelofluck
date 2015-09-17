@@ -1,25 +1,19 @@
 package local.isi.wheelofluck.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import local.isi.wheelofluck.R;
 import local.isi.wheelofluck.entities.Level;
 import local.isi.wheelofluck.events.ArrowEvent;
 import local.isi.wheelofluck.iface.ArrowListener;
@@ -78,7 +72,6 @@ public class Arrow extends View implements Runnable {
         init(context, handler);
         levelArrow = true;
         arrowHist = new ArrayList<>();
-        //p.setColor(Color.RED);
         p.setColor(Color.parseColor("#00000000"));
         isMaster = true;
         piercingDistance = GameBoard.getMidCircleRadius(ctx) - (int)(GameBoard.getMidCircleRadius(ctx) * 0.06);
@@ -193,7 +186,6 @@ public class Arrow extends View implements Runnable {
             canvas.drawPath(arrowHead, pArrowHead);
             canvas.drawRect(arrowTail, pArrowTail);
         }
-
     }
     private Path Calculate(Point A, Point B, Point C) {
         Path Pencil = new Path();
@@ -209,12 +201,12 @@ public class Arrow extends View implements Runnable {
         if (!removeRunnables) {
             // Moving arrow to target
             // If arrow is too deep inside, adjust its position
-            if (!isRotating && y > GameBoard.getOriginXY(ctx) + GameBoard.getMidCircleRadius(ctx) - 10) {
+            if (!isRotating && y > GameBoard.getOriginXY(ctx) + piercingDistance) {
                 // Arrow speed
                 y -= 75;
                 // Successful hit
-                if (y < GameBoard.getOriginXY(ctx) + GameBoard.getMidCircleRadius(ctx) - 10) {
-                    y = GameBoard.getOriginXY(ctx) + GameBoard.getMidCircleRadius(ctx) - 10;
+                if (y < GameBoard.getOriginXY(ctx) + piercingDistance) {
+                    y = GameBoard.getOriginXY(ctx) + piercingDistance;
                     offsetDegree = masterDegree;
                     addToHistory(offsetDegree);
 
@@ -252,7 +244,6 @@ public class Arrow extends View implements Runnable {
                 masterDegree = degree;
                 //Log.d("collision MasterDegree", "" + masterDegree);
             }
-
 
             invalidate();
             handler.post(this);

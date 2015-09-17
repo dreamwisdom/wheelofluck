@@ -51,7 +51,7 @@ public class GameBoard {
             if(clockwise)
                 startArrows++;
 
-            Level level = new Level(clockwise, startArrows, startObstacle, speed);
+            Level level = new Level(i, clockwise, startArrows, startObstacle, speed);
             levels.add(level);
         }
 

@@ -35,16 +35,16 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
         ctx = this;
         handler = new Handler();
+        int lv = getIntent().getIntExtra("level", 0);
         // Adding middle circle to layout
-        MiddleCircle centerCircle = new MiddleCircle(this);
+        MiddleCircle centerCircle = new MiddleCircle(this, lv);
         fl = (FrameLayout) findViewById(R.id.game_activity);
         fl.addView(centerCircle);
 
         // init master arrow
-        int lv = getIntent().getIntExtra("level", 0);
+
         Level level = GameBoard.getLevel(lv);
         Arrow.nbArrowsLeft = GameBoard.getLevel(lv).getNbArrow();
         Arrow masterArrow = new Arrow(ctx, handler, level, true);
@@ -69,12 +69,6 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         tvArrow = (TextView) findViewById(R.id.tv_arrow);
         tvArrow.setText("Arrows left" + GameBoard.getLevel(lv).getNbArrow());
     }
-
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        tvArrow.layout(GameBoard.getOriginXY(ctx), GameBoard.getOriginXY(ctx), GameBoard.getOriginXY(ctx) + 40, GameBoard.getOriginXY(ctx) + 40);
-//    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -129,35 +123,20 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         return super.onKeyDown(keyCode, event);
     }
 
-    // Kill activity on back button and ?
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        Arrow.removeRunnables = true;
-//        finish();
-    }
-
     @Override
     public void endActivity() {
 
-            new AlertDialog.Builder(ctx)
-                    .setTitle("Game over")
-                    .setMessage("Main menu")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // TODO
-                            Arrow.removeRunnables = true;
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // TODO
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Game over")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Arrow.removeRunnables = true;
+                        finish();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -169,9 +148,9 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         new AlertDialog.Builder(ctx)
                 .setTitle("Success")
                 .setMessage("Next level?")
+                .setCancelable(false)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO
                         Intent intent = getIntent();
                         int level = intent.getIntExtra("level", 0);
                         getIntent().putExtra("level", ++level);
@@ -181,10 +160,18 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO
+                        Arrow.removeRunnables = true;
+                        finish();
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Arrow.removeRunnables = true;
+        finish();
     }
 }
