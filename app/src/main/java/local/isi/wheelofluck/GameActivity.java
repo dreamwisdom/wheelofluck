@@ -49,15 +49,15 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         // init master arrow
 
         Level level = GameBoard.getLevel(lv);
-        Arrow.nbArrowsLeft = GameBoard.getLevel(lv).getNbArrow();
-        Arrow masterArrow = new Arrow(ctx, handler, level, true);
+        Arrow.init(ctx, level, handler);
+        Arrow masterArrow = new Arrow(ctx, true);
         fl.addView(masterArrow);
 
         // Init level
-        GameBoard.initLevel(ctx, handler, fl, lv);
+        GameBoard.initLevel(ctx, fl, lv);
 
         // First arrow
-        arrow = new Arrow(ctx, handler);
+        arrow = new Arrow(ctx);
         arrow.addArrowListener(this);
         arrow.addEndActivity(this);
         fl.addView(arrow);
@@ -92,7 +92,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
                 });
 
                 arrow.launch();
-                arrow = new Arrow(ctx, handler);
+                arrow = new Arrow(ctx);
                 arrow.addArrowListener(this);
                 arrow.addEndActivity(this);
 

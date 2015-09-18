@@ -24,7 +24,7 @@ public class Arrow extends View implements Runnable {
 
     Context ctx;
     Rect arrow;
-    Handler handler;
+    static Handler handler;
     Paint p;                                    // arrow color
     int originXY;
     float degree;
@@ -49,7 +49,7 @@ public class Arrow extends View implements Runnable {
     static public boolean removeRunnables;
     static int piercingDistance;
     static Level level;
-    static int arrowHeadYOffset = -10;
+    static int arrowHeadYOffset;
     static int arrowHeadWidth;
     static int arrowHeadHeight;
 
@@ -58,31 +58,45 @@ public class Arrow extends View implements Runnable {
     Rect arrowTail;
     Paint pArrowTail;
 
-    // Constructor for the master arrow
-    public Arrow(Context context, Handler handler, Level level, boolean master) {
-        super(context);
+    // init static variable
+    public static void init(Context ctx, Level gLevel, Handler ghandler){
 
-        this.ctx = context;
-
-        initArrowSize();
-        this.level = level;
-        arrowHeadYOffset = -(int)(GameBoard.getMidCircleRadius(ctx) * 0.06);
-        debugArrowID = 0;
-        removeRunnables = false;
-        init(context, handler);
-        levelArrow = true;
+        handler = ghandler;
         arrowHist = new ArrayList<>();
-        p.setColor(Color.parseColor("#00000000"));
-        isMaster = true;
+
+        level = gLevel;
+        arrowHeadYOffset = -(int)(GameBoard.getMidCircleRadius(ctx) * 0.06);
         piercingDistance = GameBoard.getMidCircleRadius(ctx) - (int)(GameBoard.getMidCircleRadius(ctx) * 0.06);
 
-        isRotating = true;
-        //w = 30;
-        arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
+        // init arrow size
+        int screenWidth = GameBoard.getWidth(ctx);
+        arrowHeadWidth = (int)(screenWidth * 0.02);
+        arrowHeadHeight = (int)(screenWidth * 0.02);
+        w = (int)(screenWidth * 0.012);
 
         pArrowHead = new Paint();
         pArrowHead.setStyle(Paint.Style.FILL);
         pArrowHead.setColor(Color.BLACK);
+
+        nbArrowsLeft = GameBoard.getLevel(gLevel.getLevel()).getNbArrow();
+    }
+
+    // Constructor for the master arrow
+    public Arrow(Context context, boolean master) {
+        super(context);
+
+        this.ctx = context;
+
+        debugArrowID = 0;
+        removeRunnables = false;
+        initArrow(context, handler);
+        levelArrow = true;
+
+        p.setColor(Color.parseColor("#00000000"));
+        isMaster = true;
+        isRotating = true;
+        //w = 30;
+        arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
 
         int triX = originXY;
         int triY = originXY + piercingDistance;
@@ -102,11 +116,11 @@ public class Arrow extends View implements Runnable {
     }
 
     // Constructor for adding pre-existing arrows in center
-    public Arrow(Context context, Handler handler, float degree) {
+    public Arrow(Context context, float degree) {
         super(context);
 
         ++debugArrowID;
-        init(context, handler);
+        initArrow(context, handler);
         levelArrow = true;
 
         this.degree = degree;
@@ -137,15 +151,13 @@ public class Arrow extends View implements Runnable {
     }
 
     // Constructor for adding players (ready to shoot) arrows
-    public Arrow(Context context, Handler handler) {
+    public Arrow(Context context) {
         super(context);
 
         ++debugArrowID;
-        init(context, handler);
+        initArrow(context, handler);
         arrArrowListener = new ArrayList<>();
 
-        //int piercingDistance = GameBoard.getMidCircleRadius(ctx) - 10;
-        //arrow = new Rect(originXY - w/2,originXY + piercingDistance,originXY + w/2,originXY + h + piercingDistance);
         int height = GameBoard.getHeight(ctx);
         x1 = originXY - w/2;
         x2 = originXY + w/2;
@@ -254,7 +266,7 @@ public class Arrow extends View implements Runnable {
         handler.post(this);
     }
 
-    private void init(Context ctx, Handler handler){
+    private void initArrow(Context ctx, Handler handler){
 
         this.handler = handler;
         this.ctx = ctx;
@@ -314,12 +326,7 @@ public class Arrow extends View implements Runnable {
             return true;
         }
     }
-    public void initArrowSize()   {
-        int screenWidth = GameBoard.getWidth(ctx);
-        arrowHeadWidth = (int)(screenWidth * 0.02);
-        arrowHeadHeight = (int)(screenWidth * 0.02);
-        w = (int)(screenWidth * 0.012);
-    }
+
 
 
 }

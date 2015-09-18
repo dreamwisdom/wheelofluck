@@ -1,7 +1,6 @@
 package local.isi.wheelofluck.info;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.widget.FrameLayout;
 
@@ -58,7 +57,7 @@ public class GameBoard {
         return levels.get(lv - 1);
     }
 
-    public static void initLevel(Context ctx, Handler handler, FrameLayout fl, int lv){
+    public static void initLevel(Context ctx, FrameLayout fl, int lv){
         Level level = GameBoard.getLevel(lv);
 
         int nbArrow = level.getNbArrow();
@@ -66,7 +65,7 @@ public class GameBoard {
         float degree = 0;
 
         for (int i = 0; i < nbArrow; i++){
-            Arrow arrow = new Arrow(ctx, handler, degree);
+            Arrow arrow = new Arrow(ctx, degree);
             fl.addView(arrow);
             degree += degreeIncrement;
         }
