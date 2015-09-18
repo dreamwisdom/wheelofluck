@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -30,6 +32,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     Arrow arrow;
     long timeStamp;
     TextView tvArrow;
+    int level;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
+        Log.d("xxxdebug", "in onKeyDown");
         if ((keyCode == KeyEvent.KEYCODE_BACK))
         {
             Arrow.removeRunnables = true;
@@ -125,7 +129,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
 
     @Override
     public void endActivity() {
-
+        Log.d("xxxdebug", "in endActivity");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Game over")
                 .setCancelable(false)
@@ -141,8 +145,18 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
 
     @Override
     public void nextLevel() {
+        Log.d("xxxdebug", "in Next level");
         // kill all runnable
         Arrow.removeRunnables = true;
+
+        Intent intent = getIntent();
+        level = intent.getIntExtra("level", 0) + 1;
+
+        // save level
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(MainActivity.PREFS_LEVEL, level);
+        editor.commit();
 
         // show dialog
         new AlertDialog.Builder(ctx)
@@ -151,9 +165,8 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
                 .setCancelable(false)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = getIntent();
-                        int level = intent.getIntExtra("level", 0);
-                        getIntent().putExtra("level", ++level);
+
+                        getIntent().putExtra("level", level);
                         startActivity(getIntent());
                         finish();
                     }
@@ -171,6 +184,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("xxxdebug", "in onPause");
         Arrow.removeRunnables = true;
         finish();
     }

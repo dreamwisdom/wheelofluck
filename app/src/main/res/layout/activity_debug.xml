@@ -32,4 +32,13 @@
         android:layout_toRightOf="@+id/et_c_lv"
         android:layout_toEndOf="@+id/et_c_lv" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset Levels"
+        android:id="@+id/btn_reset"
+        android:layout_below="@+id/et_c_lv"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

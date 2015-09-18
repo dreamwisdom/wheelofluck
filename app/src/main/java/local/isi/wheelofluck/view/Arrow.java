@@ -161,7 +161,7 @@ public class Arrow extends View implements Runnable {
                 originXY + (int)(w*1.5),
                 y + h - h/9);
         pArrowTail = new Paint();
-        pArrowTail.setColor(Color.parseColor("#99999999"));
+        pArrowTail.setColor(Color.parseColor("#99CDB99C"));
     }
 
     public void addArrowListener(ArrowListener arrowListener){

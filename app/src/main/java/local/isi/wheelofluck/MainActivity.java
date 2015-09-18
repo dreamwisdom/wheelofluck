@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,16 +17,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 public class MainActivity extends Activity {
-    Context ctx;
 
+    Context ctx;
+    public static final String PREFS_NAME = "MyPrefsFile";
+    public static final String PREFS_LEVEL = "level";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //            Range<Integer> volume =new Range<Integer>(0,100);
         ctx=this;
-        MediaPlayer mp = MediaPlayer.create(ctx, R.raw.arrow);
-        mp.start();
+//        MediaPlayer mp = MediaPlayer.create(ctx, R.raw.arrow);
+//        mp.start();
         setContentView(R.layout.activity_main);
 
         // Btn start
@@ -33,8 +36,13 @@ public class MainActivity extends Activity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Get saved level
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                int level = settings.getInt("level", 1);
+
                 Intent gameIntent = new Intent(MainActivity.this, GameActivity.class);
-                gameIntent.putExtra("level", 1);
+                gameIntent.putExtra(PREFS_LEVEL, level);
                 startActivity(gameIntent);
             }
         });

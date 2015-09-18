@@ -1,6 +1,7 @@
 package local.isi.wheelofluck;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,6 +27,18 @@ public class DebugActivity extends AppCompatActivity {
                 int level = Integer.parseInt(etLevel.getText().toString());
                 gameIntent.putExtra("level", level);
                 startActivity(gameIntent);
+            }
+        });
+
+        // Reset the level in shared preference
+        Button btnReset = (Button)findViewById(R.id.btn_reset);
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt(MainActivity.PREFS_LEVEL, 1);
+                editor.commit();
             }
         });
     }
