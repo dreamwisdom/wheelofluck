@@ -6,14 +6,18 @@ public class Level {
     int nbArrow;
     boolean clockwise;
     int nbObstacle;
-    int speed;
+    float speed1Modifier;
+    float speed2Modifier;
+    int speedInterval;
 
-    public Level(int level, boolean clockwise, int nbArrow, int nbObstacle, int speed) {
+    public Level(int level, boolean clockwise, int nbArrow, int nbObstacle, float speed1Modifier, float speed2Modifier, int speedInterval) {
         this.clockwise = clockwise;
         this.level = level;
         this.nbArrow = nbArrow;
         this.nbObstacle = nbObstacle;
-        this.speed = speed;
+        this.speed1Modifier = speed1Modifier;
+        this.speed2Modifier = speed2Modifier;
+        this.speedInterval = speedInterval;
     }
 
     public boolean isClockwise() {
@@ -48,11 +52,27 @@ public class Level {
         this.nbObstacle = nbObstacle;
     }
 
-    public int getSpeed() {
-        return speed;
+    public float getSpeed1Modifier() {
+        return speed1Modifier;
     }
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public void setSpeed1Modifier(float speed1Modifier) {
+        this.speed1Modifier = speed1Modifier;
+    }
+
+    public float getSpeed2Modifier() {
+        return speed2Modifier;
+    }
+
+    public void setSpeed2Modifier(float speed2Modifier) {
+        this.speed2Modifier = speed2Modifier;
+    }
+
+    public int getSpeedInterval() {
+        return speedInterval;
+    }
+
+    public void setSpeedInterval(int speedInterval) {
+        this.speedInterval = speedInterval;
     }
 }

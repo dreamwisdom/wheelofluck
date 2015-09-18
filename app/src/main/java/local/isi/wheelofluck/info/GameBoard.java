@@ -42,15 +42,34 @@ public class GameBoard {
 
         int startArrows = 7;
         int startObstacle = 3;
-        int speed = 10;
+        float speed1 = 1;
+        float speed2 = 2;
+        int speedInterval = 0;
 
+        // level 1-20
+        for(int i = 1; i <= 20; i++){
+
+            clockwise = !clockwise;
+            if(clockwise)
+                startArrows++;
+
+            Level level = new Level(i, clockwise, startArrows, startObstacle, speed1, speed2, speedInterval);
+            levels.add(level);
+        }
+
+        // level 21+
+        startArrows = 7;
+        startObstacle = 3;
+        speed1 = 1;
+        speed2 = 2;
+        speedInterval = 3;
         for(int i = 1; i <= 100; i++){
 
             clockwise = !clockwise;
             if(clockwise)
                 startArrows++;
 
-            Level level = new Level(i, clockwise, startArrows, startObstacle, speed);
+            Level level = new Level(i+20, clockwise, startArrows, startObstacle, speed1, speed2, speedInterval);
             levels.add(level);
         }
 
