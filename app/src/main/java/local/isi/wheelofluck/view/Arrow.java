@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 
@@ -29,19 +30,21 @@ public class Arrow extends View implements Runnable {
     int originXY;
     float degree;
     static int w;
-    int collisionArea = 3;  // += range >> 1 = 1-3 >> 0 = 2
+    int collisionArea = 5;  // += range >> 1 = 1-3 >> 0 = 2
     static int h;
     int x1;
     int x2;
     int y;
-    float speed = 1;
+
     float offsetDegree;                       // offset in relation to master
     List<ArrowListener> arrArrowListener;
     IEndLevel iEndLevel;
 
-    boolean levelArrow = false;                 // Arrow added automaticly at the begining of the level
+    boolean levelArrow = false;               // Arrow added automaticly at the begining of the level
     boolean isRotating = false;
     boolean isMaster = false;
+
+    // Static variables
     static int debugArrowID;
     static float masterDegree;                // Position of master arrow (circle)
     static List<Float> arrowHist;
@@ -52,8 +55,19 @@ public class Arrow extends View implements Runnable {
     static int arrowHeadYOffset;
     static int arrowHeadWidth;
     static int arrowHeadHeight;
-
     static Paint pArrowHead;
+
+    // Speed Management
+    static boolean linearSpeed;
+    static boolean normalSpeed = true;
+    static int timeSpeedInterval;
+    static float speed1Modifier;
+    static float speed2Modifier;
+    static float baseSpeed = 1;
+    static float speed = baseSpeed;
+    static long speedTimeStamp;
+
+
     Path arrowHead;
     Rect arrowTail;
     Paint pArrowTail;
@@ -79,6 +93,13 @@ public class Arrow extends View implements Runnable {
         pArrowHead.setColor(Color.BLACK);
 
         nbArrowsLeft = GameBoard.getLevel(gLevel.getLevel()).getNbArrow();
+
+        // init game speed
+        linearSpeed = level.getSpeedInterval() == 0;
+        speed1Modifier = level.getSpeed1Modifier();
+        speed2Modifier = level.getSpeed2Modifier();
+        timeSpeedInterval = level.getSpeedInterval();
+        speedTimeStamp = SystemClock.elapsedRealtime();
     }
 
     // Constructor for the master arrow
@@ -214,7 +235,7 @@ public class Arrow extends View implements Runnable {
             // Moving arrow to target
             // If arrow is too deep inside, adjust its position
             if (!isRotating && y > GameBoard.getOriginXY(ctx) + piercingDistance) {
-                // Arrow speed
+                // Arrow shooting speed
                 y -= 75;
                 // Successful hit
                 if (y < GameBoard.getOriginXY(ctx) + piercingDistance) {
@@ -237,6 +258,19 @@ public class Arrow extends View implements Runnable {
                         originXY + (int)(w*1.5),
                         y + h - h/9);
             }
+
+            if (!linearSpeed) {
+                if (SystemClock.elapsedRealtime() - speedTimeStamp > timeSpeedInterval * 1000) {
+                    speedTimeStamp = SystemClock.elapsedRealtime();
+                    if (normalSpeed){
+                        speed = baseSpeed * speed2Modifier;
+                    }else{
+                        speed = baseSpeed * speed1Modifier;
+                    }
+                    normalSpeed = !normalSpeed;
+                }
+            }
+
             if (level.isClockwise()) {
                 if (degree == 360)
                     degree = 0;
