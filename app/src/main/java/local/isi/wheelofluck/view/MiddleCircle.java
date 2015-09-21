@@ -37,7 +37,8 @@ public class MiddleCircle extends View {
 
         Paint t = new Paint();
         t.setColor(Color.BLACK);
-        t.setTextSize(100);
+//        t.setTextSize(100);   // Galaxy s5
+        t.setTextSize((int)(GameBoard.getMidCircleRadius(ctx) * 0.5));
         t.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         if(lv <10){
             int offsetX = GameBoard.getMidCircleRadius(ctx)/7;

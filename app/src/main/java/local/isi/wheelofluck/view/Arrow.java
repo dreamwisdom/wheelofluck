@@ -59,12 +59,12 @@ public class Arrow extends View implements Runnable {
 
     // Speed Management
     static boolean linearSpeed;
-    static boolean normalSpeed = true;
+    static boolean normalSpeed;
     static int timeSpeedInterval;
     static float speed1Modifier;
     static float speed2Modifier;
     static float baseSpeed = 1;
-    static float speed = baseSpeed;
+    static float speed;
     static long speedTimeStamp;
 
 
@@ -100,6 +100,12 @@ public class Arrow extends View implements Runnable {
         speed2Modifier = level.getSpeed2Modifier();
         timeSpeedInterval = level.getSpeedInterval();
         speedTimeStamp = SystemClock.elapsedRealtime();
+        speed = baseSpeed;
+
+        // print speed
+        Log.d("xxx Speed", "" + baseSpeed);
+        Log.d("xxx Speed", String.valueOf(speed1Modifier));
+        Log.d("xxx Speed", String.valueOf(speed2Modifier));
     }
 
     // Constructor for the master arrow
@@ -296,6 +302,7 @@ public class Arrow extends View implements Runnable {
             // Update master arrow
             if (isMaster) {
                 masterDegree = degree;
+                //Log.d("xxx Curr Speed", String.valueOf(speed));
                 //Log.d("collision MasterDegree", "" + masterDegree);
             }
 

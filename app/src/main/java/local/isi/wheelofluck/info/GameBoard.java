@@ -43,7 +43,7 @@ public class GameBoard {
         int startArrows = 7;
         int startObstacle = 3;
         float speed1 = 1;
-        float speed2 = 2;
+        float speed2 = 1;
         int speedInterval = 0;
 
         // level 1-20

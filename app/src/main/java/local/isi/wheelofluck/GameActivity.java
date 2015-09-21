@@ -35,7 +35,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     long timeStamp;
     TextView tvArrow;
     int level;
-    BackgroundSound mBackgroundSound;
+    static BackgroundSound mBackgroundSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +72,23 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         timeStamp = SystemClock.elapsedRealtime();
 
         // Level msg
-        TextView tvLevel = (TextView) findViewById(R.id.tv_level);
-        tvLevel.setText("Level: " + lv);
+//        TextView tvLevel = (TextView) findViewById(R.id.tv_level);
+//        tvLevel.setText("Level: " + lv);
 
         // Arrow left msg
         tvArrow = (TextView) findViewById(R.id.tv_arrow);
-        tvArrow.setText("Arrows left" + GameBoard.getLevel(lv).getNbArrow());
+        tvArrow.setText("Arrows left: " + GameBoard.getLevel(lv).getNbArrow());
 
         // Background music
+        try {
+            mBackgroundSound.stop();
+        }catch (Exception e){
+
+        }
         mBackgroundSound = new BackgroundSound(this);
+
+        // Debug
+        Log.d("xxx onCreate", "lv: " + lv);
     }
 
     @Override
@@ -132,7 +140,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         if ((keyCode == KeyEvent.KEYCODE_BACK))
         {
             Arrow.removeRunnables = true;
-            finish();
+            //finish();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -201,7 +209,17 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     @Override
     protected void onResume() {
         super.onResume();
-        mBackgroundSound.execute();
+        try {
+            mBackgroundSound.stop();
+        }catch (Exception e){
+
+        }
+        try {
+            mBackgroundSound.execute();
+        }catch (Exception e){
+
+        }
+
     }
 
     @Override
@@ -214,7 +232,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         }catch (Exception e){
 
         }
-        Log.d("xxxdebug", "in onPause");
+        Log.d("xxxdebug", "in onPause stopping sound");
         Arrow.removeRunnables = true;
         finish();
     }

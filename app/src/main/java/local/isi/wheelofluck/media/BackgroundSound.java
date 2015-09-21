@@ -4,7 +4,6 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 
-import local.isi.wheelofluck.GameActivity;
 import local.isi.wheelofluck.R;
 
 public class BackgroundSound extends AsyncTask<Void, Void, Void> {
@@ -28,6 +27,7 @@ public class BackgroundSound extends AsyncTask<Void, Void, Void> {
 
     public void stop(){
         player.stop();
+        player.release();
     }
 
 }
