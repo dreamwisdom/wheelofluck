@@ -159,14 +159,21 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         // kill all runnable
         Arrow.removeRunnables = true;
 
-        Intent intent = getIntent();
-        level = intent.getIntExtra("level", 0) + 1;
-
-        // save level
+        // Get current level
         SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(MainActivity.PREFS_LEVEL, level);
-        editor.commit();
+        int realLevel = settings.getInt("level", 1);
+
+
+        Intent intent = getIntent();
+        level = intent.getIntExtra("level", 0);
+
+        // Only save level if player is on last level
+        if (level == realLevel){
+            // save level
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt(MainActivity.PREFS_LEVEL, level + 1);
+            editor.commit();
+        }
 
         // show dialog
         new AlertDialog.Builder(ctx)
@@ -176,7 +183,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        getIntent().putExtra("level", level);
+                        getIntent().putExtra("level", level + 1);
                         startActivity(getIntent());
                         finish();
                     }
@@ -200,7 +207,13 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     @Override
     protected void onPause() {
         super.onPause();
-        mBackgroundSound.stop();
+        // Stop only when started
+        // Exception when comming from level activity
+        try {
+            mBackgroundSound.stop();
+        }catch (Exception e){
+
+        }
         Log.d("xxxdebug", "in onPause");
         Arrow.removeRunnables = true;
         finish();

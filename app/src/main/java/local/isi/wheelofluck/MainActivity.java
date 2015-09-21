@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import local.isi.wheelofluck.view.LevelsActivity;
+
 public class MainActivity extends Activity {
 
     Context ctx;
@@ -47,15 +49,25 @@ public class MainActivity extends Activity {
             }
         });
 
-        // Btn cheat
+        // Btn Level
         ImageView btnCheat = (ImageView) findViewById(R.id.btn__cheat);
         btnCheat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gameIntent = new Intent(MainActivity.this, DebugActivity.class);
+                Intent gameIntent = new Intent(MainActivity.this, LevelsActivity.class);
                 startActivity(gameIntent);
             }
         });
+        // Btn cheat
+        btnCheat.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent gameIntent = new Intent(MainActivity.this, DebugActivity.class);
+                startActivity(gameIntent);
+                return true;
+            }
+        });
+
 //Btn exit
         ImageView btnQuitter = (ImageView) findViewById(R.id.btn_quitter);
         btnQuitter.setOnClickListener(new View.OnClickListener() {

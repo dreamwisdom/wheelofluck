@@ -296,7 +296,7 @@ public class Arrow extends View implements Runnable {
             // Update master arrow
             if (isMaster) {
                 masterDegree = degree;
-                Log.d("collision MasterDegree", "" + masterDegree);
+                //Log.d("collision MasterDegree", "" + masterDegree);
             }
 
             invalidate();
