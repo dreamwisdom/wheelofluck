@@ -22,6 +22,7 @@ import local.isi.wheelofluck.events.ArrowEvent;
 import local.isi.wheelofluck.iface.ArrowListener;
 import local.isi.wheelofluck.iface.IEndLevel;
 import local.isi.wheelofluck.info.GameBoard;
+import local.isi.wheelofluck.media.BackgroundSound;
 import local.isi.wheelofluck.view.MiddleCircle;
 import local.isi.wheelofluck.view.Arrow;
 
@@ -34,6 +35,7 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     long timeStamp;
     TextView tvArrow;
     int level;
+    BackgroundSound mBackgroundSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,9 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
         // Arrow left msg
         tvArrow = (TextView) findViewById(R.id.tv_arrow);
         tvArrow.setText("Arrows left" + GameBoard.getLevel(lv).getNbArrow());
+
+        // Background music
+        mBackgroundSound = new BackgroundSound(this);
     }
 
     @Override
@@ -187,8 +192,15 @@ public class GameActivity extends Activity implements ArrowListener, IEndLevel {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mBackgroundSound.execute();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        mBackgroundSound.stop();
         Log.d("xxxdebug", "in onPause");
         Arrow.removeRunnables = true;
         finish();

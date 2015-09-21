@@ -272,14 +272,22 @@ public class Arrow extends View implements Runnable {
             }
 
             if (level.isClockwise()) {
+                // Combine 2 if into one?
                 if (degree == 360)
                     degree = 0;
+                // when speed > 1
+                else if(degree > 360)
+                    degree = degree - 360;
 
                 if (isRotating)
                     degree += speed;
             }else{
+                // Combine 2 if into one?
                 if (degree == 0)
                     degree = 360;
+                // when speed > 1
+                else if(degree < 0)
+                    degree = 360 - Math.abs(degree);
 
                 if (isRotating)
                     degree -= speed;
@@ -288,7 +296,7 @@ public class Arrow extends View implements Runnable {
             // Update master arrow
             if (isMaster) {
                 masterDegree = degree;
-                //Log.d("collision MasterDegree", "" + masterDegree);
+                Log.d("collision MasterDegree", "" + masterDegree);
             }
 
             invalidate();
